@@ -10,11 +10,12 @@ import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 //@Config(port = 1022)
 public class FileServer {
     /*
-    * 一个简易的tcp嵌套字实现的文件下载系统
-    * */
+     * 一个简易的tcp嵌套字实现的文件下载系统
+     * */
     public static ArrayList<File> fileList = new ArrayList<>();
     //服务器资源文件夹位置
     private final static File filePackage = new File("C:\\Users\\Ezzra\\Desktop\\FileService");
@@ -24,6 +25,7 @@ public class FileServer {
     //自定义的线程池
     private static ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(3, 5, 10, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(5), new ThreadPoolExecutor.CallerRunsPolicy());
+
     //初始化静态的对象
     static {
         scannFile(filePackage, fileList);
@@ -45,6 +47,7 @@ public class FileServer {
         //传输文件服务
         transFile();
     }
+
     //扫描文件夹下的所有文件
     public static void scannFile(File target, ArrayList<File> list) {
         if (target.isFile()) list.add(target);
@@ -55,12 +58,13 @@ public class FileServer {
             }
         }
     }
+
     private static void stratService() throws IOException {
-        poolExecutor.submit(()->{
+        poolExecutor.submit(() -> {
             System.out.println(Thread.currentThread().getName() + " 开始提供文件列表服务...");
             while (true) {
                 Socket accept = serverFL.accept();
-                poolExecutor.submit(()->{
+                poolExecutor.submit(() -> {
                     try {
                         BufferedReader br = new BufferedReader(new InputStreamReader(accept.getInputStream()));
                         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(accept.getOutputStream()));
@@ -76,20 +80,20 @@ public class FileServer {
                         System.out.println(Thread.currentThread().getName() + "->" + accept.getInetAddress().getHostName() + " 服务状态: " + "提供文件列表信息结束。\n");
                         bw.flush();
                         accept.close();
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
             }
         });
     }
+
     private static void transFile() throws IOException {
-        poolExecutor.submit(()->{
+        poolExecutor.submit(() -> {
             System.out.println(Thread.currentThread().getName() + " 开始提供传输文件服务...");
             while (true) {
                 Socket accept = serverTF.accept();
-                poolExecutor.submit(()->{
+                poolExecutor.submit(() -> {
                     try {
                         BufferedReader br = new BufferedReader(new InputStreamReader(accept.getInputStream()));
                         String index = br.readLine();
@@ -108,8 +112,7 @@ public class FileServer {
                         System.out.println(Thread.currentThread().getName() + "->" + accept.getInetAddress().getHostName() + " 服务状态: " + "传输文件结束!\n");
                         accept.shutdownOutput();
                         accept.close();
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
