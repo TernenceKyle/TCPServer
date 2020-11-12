@@ -1,6 +1,5 @@
 package com.ezzra.fileserver;
 
-import com.ezzra.fileserver.anno.Config;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -27,7 +26,6 @@ public class FileServer {
     //初始化静态的对象
     static {
         scannFile(filePackage, fileList);
-        Config conf = FileServer.class.getAnnotation(Config.class);
         try {
             serverTF = new ServerSocket(1023);
             serverFL = new ServerSocket(1022);
