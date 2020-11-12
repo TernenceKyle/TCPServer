@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,9 +27,13 @@ public class FileServer {
     //初始化静态的对象
     static {
         scannFile(filePackage, fileList);
+        Properties prop = new Properties();
         try {
-            serverTF = new ServerSocket(1023);
-            serverFL = new ServerSocket(1022);
+            InputStream in = FileServer.class.getClassLoader().getResourceAsStream("config.properties");
+            prop.load(in);
+            in.close();
+            serverTF = new ServerSocket(Integer.parseInt(prop.getProperty("port2")));
+            serverFL = new ServerSocket(Integer.parseInt(prop.getProperty("port1")));
         } catch (IOException e) {
             e.printStackTrace();
         }
